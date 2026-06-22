@@ -8,7 +8,8 @@ Heart Disease Prediction using Machine Learning —
 ---
 
 **Abstract**
-This project builds a machine learning system that predicts the likelihood of heart disease in a patient based on 13 clinical features. It uses the UCI Cleveland Heart Disease Dataset (303 patients) and serves predictions through a Flask web application. The final model achieves 88.5% test accuracy and 93.4% ROC-AUC score.
+
+Heart disease remains a major health concern globally, and timely identification of at-risk patients can significantly improve treatment outcomes. Conventional diagnostic approaches depend heavily on clinical expertise and are not always accessible. This project presents a machine learning based prediction system trained on the UCI Cleveland Heart Disease Dataset consisting of 303 patient records and 13 clinical features. Multiple classification models were developed and compared, including Logistic Regression, Random Forest, and Support Vector Machine, using a proper preprocessing pipeline with StandardScaler to prevent data leakage. Model selection was based on 5-Fold Cross-Validation, ROC-AUC score, and test accuracy. The final deployed model achieves 88.5% accuracy and 93.4% AUC. The system is integrated into a Flask web application that allows users to input patient data and receive instant risk predictions.
 
 ---
 
@@ -18,7 +19,9 @@ Heart Disease Prediction, Logistic Regression, Scikit-learn, Flask, Machine Lear
 ---
 
 **I. Introduction**
-Heart disease is one of the leading causes of death worldwide. Early detection can save lives. This project uses machine learning to analyze patient health data and predict whether a person has heart disease or not. A doctor or researcher can enter patient values into a simple web form and get an instant prediction with a risk level (Low / Medium / High).
+Cardiovascular diseases are responsible for millions of deaths each year, making early and accurate diagnosis a priority in modern healthcare. However, identifying heart disease in its early stages is challenging because symptoms are often subtle and standard tests require significant time and resources.
+Machine learning offers a data-driven alternative — by learning patterns from historical patient records, a trained model can assist clinicians in flagging high-risk individuals quickly. This project applies that idea practically by building a complete prediction pipeline using the widely studied UCI Cleveland Heart Disease Dataset.
+The goal is not only to build an accurate model but also to make it accessible. A Flask-based web application wraps the trained model, allowing non-technical users to enter patient values through a simple form and receive an instant prediction along with a risk level. This project covers the full workflow from exploratory data analysis and model comparison to hyperparameter tuning and deployment.
 
 ---
 
