@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Result — Heart Health Check</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="{{ url_for('index') }}" class="brand">
+      <span class="pulse-dot"></span> Heart Health Check
+    </a>
+    <span class="tag">Educational tool, not a diagnosis</span>
+  </div>
+
+  <div class="page">
+
+    <div class="result-hero">
+      <p class="eyebrow">Step 2 of 2 — Your result</p>
+      <h1 class="title">Here's what we found.</h1>
+    </div>
+
+    <div class="ecg-wrap">
+      <svg viewBox="0 0 1200 64" preserveAspectRatio="none" width="200%" height="64">
+        <path class="ecg-line" d="{{ ecg_path }}"></path>
+      </svg>
+    </div>
+
+    {% set risk_class = 'risk-high' if result.risk == 'High' else ('risk-medium' if result.risk == 'Medium' else 'risk-low') %}
+    <div class="verdict-card {{ risk_class }}">
+
+      <div class="gauge-wrap">
+        <svg width="180" height="100" viewBox="0 0 180 100">
+          <path d="M 10 95 A 80 80 0 0 1 170 95" fill="none" stroke="#EDE7D8" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 10 95 A 80 80 0 0 1 170 95"
+                fill="none"
+                stroke="{{ '#B23A2E' if risk_class=='risk-high' else ('#C68A2E' if risk_class=='risk-medium' else '#5B8C7E') }}"
+                stroke-width="14" stroke-linecap="round"
+                stroke-dasharray="251.2"
+                stroke-dashoffset="{{ 251.2 - (251.2 * result.probability / 100) }}"/>
+          <text x="90" y="78" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="26" font-weight="600" fill="#1B2A4A">{{ result.probability }}%</text>
+        </svg>
+      </div>
+
+      <p class="verdict-sub">Estimated likelihood of heart disease</p>
+      <h2 class="verdict-label">{{ result.label }}</h2>
+      <span class="risk-badge">{{ result.risk }} risk</span>
+
+      <p class="disclaimer">
+        This estimate comes from a statistical model trained on past patient data —
+        it cannot examine you and is not a diagnosis. If you have symptoms or
+        concerns, please talk to a doctor.
+      </p>
+    </div>
+
+    <h3 class="summary-title">What you told us</h3>
+    <p class="summary-sub">Double-check these — if anything looks off, go back and re-enter it.</p>
+
+    <table class="summary-table">
+      {% for k, v in result.summary_rows %}
+      <tr>
+        <td>{{ k }}</td>
+        <td>{{ v }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="actions">
+      <a href="{{ url_for('index') }}" class="btn primary">← Run another check</a>
+      <a href="{{ url_for('model_info') }}" class="btn ghost" target="_blank">View model accuracy (JSON)</a>
+    </div>
+
+    <footer class="note">
+      Built on the UCI Cleveland Heart Disease dataset (303 patients) using a logistic
+      regression model with 88.5% test accuracy. For learning purposes only — not
+      medical advice.
+    </footer>
+  </div>
+
+</body>
+</html>

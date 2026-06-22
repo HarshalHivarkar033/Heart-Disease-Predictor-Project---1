@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Health Check — Free Risk Screening</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="{{ url_for('index') }}" class="brand">
+      <span class="pulse-dot"></span> Heart Health Check
+    </a>
+    <span class="tag">Educational tool, not a diagnosis</span>
+  </div>
+
+  <div class="page">
+
+    <div class="hero">
+      <p class="eyebrow">Step 1 of 2 — Tell us about you</p>
+      <h1 class="title">A 2-minute heart&nbsp;screening,<br>explained in plain English.</h1>
+      <p class="subtitle">
+        Answer 13 simple questions — the same ones a cardiologist checks during
+        a routine workup — and our model will estimate your likelihood of
+        heart disease. No medical jargon required.
+      </p>
+    </div>
+
+    <div class="ecg-wrap">
+      <svg viewBox="0 0 1200 64" preserveAspectRatio="none" width="200%" height="64">
+        <path class="ecg-line" d="{{ ecg_path }}"></path>
+      </svg>
+    </div>
+
+    <div class="chip-row">
+      <span class="chip"><b>13</b> quick questions</span>
+      <span class="chip"><b>Instant</b> result page</span>
+      <span class="chip"><b>88.5%</b> model accuracy</span>
+      <span class="chip"><b>No</b> sign-up needed</span>
+    </div>
+
+    {% if error %}
+    <div class="error-banner">Something didn't add up: {{ error }}. Please check your answers and try again.</div>
+    {% endif %}
+
+    <form action="{{ url_for('predict') }}" method="POST">
+
+      <!-- 1. About you -->
+      <div class="fieldset">
+        <div class="fieldset-head">
+          <span class="fieldset-num">1</span>
+          <h2>About you</h2>
+        </div>
+        <p class="hint">Two basics that change how we read every other number.</p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="age">Age</label>
+            <div class="slider-row">
+              <input type="range" id="age_slider" min="18" max="90" value="50" oninput="syncVal('age',this.value)">
+              <span class="slider-val" id="age_val">50 yrs</span>
+            </div>
+            <input type="hidden" id="age" name="age" value="50">
+          </div>
+
+          <div class="field">
+            <label for="sex">Sex</label>
+            <select id="sex" name="sex" required>
+              <option value="1">Male</option>
+              <option value="0">Female</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Vital signs -->
+      <div class="fieldset">
+        <div class="fieldset-head">
+          <span class="fieldset-num">2</span>
+          <h2>Vital signs</h2>
+        </div>
+        <p class="hint">From your last check-up or blood-pressure cuff reading.</p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="trestbps">Resting blood pressure</label>
+            <div class="slider-row">
+              <input type="range" id="trestbps_slider" min="80" max="220" value="130" oninput="syncVal('trestbps',this.value)">
+              <span class="slider-val" id="trestbps_val">130 mmHg</span>
+            </div>
+            <input type="hidden" id="trestbps" name="trestbps" value="130">
+            <span class="field-help">The top number on a blood pressure reading, taken at rest.</span>
+          </div>
+
+          <div class="field">
+            <label for="chol">Cholesterol</label>
+            <div class="slider-row">
+              <input type="range" id="chol_slider" min="100" max="600" value="240" oninput="syncVal('chol',this.value)">
+              <span class="slider-val" id="chol_val">240 mg/dl</span>
+            </div>
+            <input type="hidden" id="chol" name="chol" value="240">
+            <span class="field-help">Total cholesterol from a blood test.</span>
+          </div>
+
+          <div class="field">
+            <label for="fbs">Fasting blood sugar above 120 mg/dl?</label>
+            <select id="fbs" name="fbs" required>
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+            <span class="field-help">Measured after at least 8 hours without food.</span>
+          </div>
+
+          <div class="field">
+            <label for="restecg">Resting ECG result</label>
+            <select id="restecg" name="restecg" required>
+              <option value="0">Normal</option>
+              <option value="1">Minor ST-T wave abnormality</option>
+              <option value="2">Likely thickened heart muscle</option>
+            </select>
+            <span class="field-help">Found on a routine electrocardiogram report.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Chest pain & heart tests -->
+      <div class="fieldset">
+        <div class="fieldset-head">
+          <span class="fieldset-num">3</span>
+          <h2>Chest pain &amp; heart tests</h2>
+        </div>
+        <p class="hint">Details from a stress test or cardiology visit, if you've had one.</p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="cp">Type of chest pain</label>
+            <select id="cp" name="cp" required>
+              <option value="0">Typical angina (classic squeezing chest pain)</option>
+              <option value="1">Atypical angina (pain, but not classic)</option>
+              <option value="2">Non-anginal pain (not heart-related pain)</option>
+              <option value="3">No chest pain symptoms</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="thal">Thalassemia / blood-flow test</label>
+            <select id="thal" name="thal" required>
+              <option value="1">Normal</option>
+              <option value="2">Fixed defect</option>
+              <option value="3">Reversible defect</option>
+              <option value="0">Not sure / not tested</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="ca">Major vessels seen on fluoroscopy</label>
+            <select id="ca" name="ca" required>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+            <span class="field-help">Number of major blood vessels highlighted by dye on imaging.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Exercise test -->
+      <div class="fieldset">
+        <div class="fieldset-head">
+          <span class="fieldset-num">4</span>
+          <h2>Exercise stress test</h2>
+        </div>
+        <p class="hint">How your heart responded during a treadmill or exercise test.</p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="thalach">Highest heart rate reached</label>
+            <div class="slider-row">
+              <input type="range" id="thalach_slider" min="60" max="220" value="150" oninput="syncVal('thalach',this.value)">
+              <span class="slider-val" id="thalach_val">150 bpm</span>
+            </div>
+            <input type="hidden" id="thalach" name="thalach" value="150">
+          </div>
+
+          <div class="field">
+            <label for="exang">Chest pain triggered by exercise?</label>
+            <select id="exang" name="exang" required>
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="oldpeak">ST depression during exercise</label>
+            <div class="slider-row">
+              <input type="range" id="oldpeak_slider" min="0" max="6.2" step="0.1" value="1.0" oninput="syncVal('oldpeak',this.value)">
+              <span class="slider-val" id="oldpeak_val">1.0</span>
+            </div>
+            <input type="hidden" id="oldpeak" name="oldpeak" value="1.0">
+            <span class="field-help">A number from your stress-test report (0 if unsure).</span>
+          </div>
+
+          <div class="field">
+            <label for="slope">Slope of the ST segment during peak exercise</label>
+            <select id="slope" name="slope" required>
+              <option value="0">Upsloping</option>
+              <option value="1">Flat</option>
+              <option value="2">Downsloping</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <p class="submit-note">You'll be taken to a new results page with your estimate, risk level, and a summary of what you entered.</p>
+        <button type="submit" class="primary">Check my heart health →</button>
+      </div>
+    </form>
+
+    <footer class="note">
+      Built on the UCI Cleveland Heart Disease dataset (303 patients) using a logistic
+      regression model with 88.5% test accuracy. This tool is for learning purposes only
+      and is not a substitute for professional medical advice — please see a doctor for
+      any real health concerns.
+    </footer>
+  </div>
+
+<script>
+function syncVal(id, val){
+  document.getElementById(id).value = val;
+  const unit = {age:' yrs', trestbps:' mmHg', chol:' mg/dl', thalach:' bpm', oldpeak:''}[id];
+  document.getElementById(id+'_val').textContent = (id === 'oldpeak' ? parseFloat(val).toFixed(1) : val) + unit;
+}
+</script>
+</body>
+</html>

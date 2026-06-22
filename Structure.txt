@@ -1,0 +1,63 @@
+CARDIAC RISK CONSOLE — PROJECT STRUCTURE
+==========================================
+
+
+heart_disease_project/
+│
+├── app.py                        # Main Flask server
+│                                 # - Trains or loads the model on startup
+│                                 # - /predict route: takes form input,
+│                                 #   runs prediction, returns result
+│                                 # - /model-info route: accuracy, AUC,
+│                                 #   CV score, confusion matrix
+│                                 # - Auto-opens browser on python app.py
+│
+├── heart_disease_data.csv        # UCI Cleveland dataset (303 rows, 14 cols)
+│                                 # 13 features + 1 binary target column
+│
+├── heart_disease_model.pkl       # Saved trained model (auto-generated)
+│                                 # Delete this to force a retrain
+│
+├── requirements.txt              # Python dependencies
+│                                 # flask, numpy, pandas, scikit-learn,
+│                                 # matplotlib, seaborn, joblib
+│
+├── Heart_Disease_Improved.ipynb  # Jupyter notebook for EDA and model
+│                                 # comparison (LR vs RF vs SVM),
+│                                 # ROC curves, confusion matrices,
+│                                 # GridSearchCV, feature importance
+│
+├── README.md                     # Setup guide and project overview
+│
+├── templates/
+│   ├── index.html                # Main page — patient input form
+│   │                             # User enters 13 health values here
+│   │
+│   └── result.html               # Result page — shows prediction output
+│                                 # Displays risk level, probability %,
+│                                 # and model feedback after form submit
+│
+└── static/
+    └── style.css                 # Styling for all pages
+                                  # Colors, layout, fonts, form design
+
+
+==========================================
+  API ENDPOINTS
+==========================================
+
+  GET  /               Main form page (index.html)
+  POST /predict        Processes form, shows result (result.html)
+  GET  /model-info     Returns model accuracy and performance metrics
+
+
+==========================================
+  KEY DEPENDENCIES
+==========================================
+
+  flask          Web server and routing
+  scikit-learn   ML pipeline and logistic regression
+  pandas/numpy   Data handling
+  joblib         Model save and load (.pkl file)
+  matplotlib     Plots generated in the notebook
+  seaborn        Charts and heatmaps in the notebook

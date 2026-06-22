@@ -1,0 +1,121 @@
+CARDIAC RISK CONSOLE — PROJECT NOTES
+======================================
+
+
+HOW TO RUN
+----------
+
+Step 1 — Check Python is installed
+   Open terminal and type:
+   python --version
+   You need version 3.9 or higher.
+   Download from https://www.python.org if needed.
+
+Step 2 — Set up a virtual environment
+   This keeps the project libraries separate
+   from the rest of your computer.
+
+   python -m venv venv
+
+   Then activate it:
+   Windows:   venv\Scripts\activate
+   Mac/Linux: source venv/bin/activate
+
+   You will see (venv) appear in your terminal.
+   That means it worked.
+
+Step 3 — Install the required libraries
+   pip install -r requirements.txt
+   This may take a minute. Just let it finish.
+
+Step 4 — Start the app
+   python app.py
+
+   First time only, it will say:
+   "No saved model found — training now..."
+   Wait a few seconds. It trains itself automatically.
+
+   After that, your browser will open on its own
+   and show the app. No need to copy any link.
+
+Step 5 — Using the dashboard
+   On the main page, click "Model Dashboard"
+   in the top right corner.
+   It opens a second page showing how well
+   the model is performing.
+
+
+IF SOMETHING GOES WRONG
+------------------------
+
+Browser did not open?
+   Manually go to: http://127.0.0.1:5000
+
+"Port already in use" error?
+   Open app.py, go to the last line,
+   change port=5000 to port=5050
+   Then visit http://127.0.0.1:5050
+
+"Module not found" error?
+   Your virtual environment might not be active.
+   Run the activate command from Step 2 again,
+   then run pip install -r requirements.txt again.
+
+Predictions look wrong?
+   Delete the file called heart_disease_model.pkl
+   and restart with python app.py.
+   It will build a fresh model.
+
+Page has no styling or looks broken?
+   Make sure the static and templates folders
+   are sitting right next to app.py in the
+   same folder. Do not move them.
+
+
+HOW IT WORKS
+-------------
+
+What is this app?
+   You enter basic medical details about a patient
+   like age, blood pressure, and cholesterol.
+   The app tells you whether that person is at
+   low, medium, or high risk of heart disease,
+   along with a probability percentage.
+
+Where does the data come from?
+   A public medical dataset from UCI called the
+   Cleveland Heart Disease Dataset.
+   It contains records of 303 real patients.
+   Each patient either had heart disease or did not.
+   The model learned patterns from those records.
+
+How does the prediction work?
+   1. You fill in the form with 13 health values.
+   2. The app checks that the values make sense.
+   3. It runs those values through a trained
+      machine learning model.
+   4. The model gives back a risk percentage.
+   5. It also tells you which factors mattered
+      most for that specific result — for example,
+      "Low max heart rate increased the risk."
+
+What is that explanation panel?
+   It uses a technique called SHAP.
+   In simple terms, it looks at each input value
+   and figures out how much it pushed the risk
+   up or down. This way you can see why the model
+   gave that result, not just what the result was.
+
+What does the dashboard show?
+   It shows how accurate the model actually is:
+   - Test Accuracy around 88%
+   - ROC-AUC around 93%
+   - A confusion matrix showing correct vs wrong
+     predictions
+   - A chart of which health features matter most
+
+IMPORTANT
+   This app is built for learning and portfolio use.
+   It is not a real medical tool.
+   Never use it to make actual health decisions.
+   Always see a real doctor for medical advice.
